@@ -1,227 +1,362 @@
 
-<!doctype html>
-<html lang="en-us">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Class of '09</title>
-<meta name="theme-color" content="#000">
 
-<link rel="icon" href="https://cdn.jsdelivr.net/gh/jc7041502-maker/C09@main/icons/icon-72x72.png">
+<link rel="icon" href="https://raw.githubusercontent.com/jc7041502-maker/C09/main/icons/icon-72x72.png">
 
 <style>
-html,body {
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#000;
-    font-family:sans-serif;
+* {
+    box-sizing: border-box;
 }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: Arial, sans-serif;
+}
+
+#gameContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #canvas {
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    background:#000;
-    border:0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+    outline: none;
 }
+
 #presplash {
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    pointer-events:none;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: #000 url("https://raw.githubusercontent.com/jc7041502-maker/C09/main/web-presplash.jpg") center center / contain no-repeat;
 }
-.visible {
-    visibility:visible;
-    opacity:1;
-    transition:opacity .1s linear;
+
+#overlayDiv {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: transparent;
+    cursor: default;
 }
-.hidden {
-    visibility:hidden;
-    opacity:0;
-    transition:visibility 0s .25s,opacity .25s linear;
-}
-#statusDiv,#inputDiv {
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    width:50%;
-    min-width:340px;
-    margin:auto;
-    padding:10px;
-    background:rgba(0,0,0,.75);
-    border-radius:0 0 5px 5px;
-}
-#statusTextDiv {
-    max-height:40vh;
-    overflow:auto;
-    color:#ccc;
-    font-size:14px;
-}
-#statusProgress {
-    display:none;
-    width:100%;
-}
-#inputDiv {
-    width:65%;
-    padding-left:10px;
-    padding-right:20px;
-}
-#inputPrompt {
-    color:#eee;
-    font-size:150%;
-    margin:1em 0;
-}
-#inputText {
-    width:100%;
-    padding:5px;
-    font-size:175%;
-    background:inherit;
-    color:#eee;
-}
+
 #ContextContainer {
-    position:absolute;
-    top:0;
-    left:0;
-    color:white;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 20;
 }
-#ContextContainer.shown {
-    background:rgba(0,0,0,.5);
-    border-radius:0 0 5px 0;
-}
+
 #ContextButton {
-    color:lightgrey;
-    font-size:xx-large;
-    padding:10px;
-    cursor:pointer;
-    text-decoration:none;
-    user-select:none;
-    opacity:.75;
+    border: 1px solid #555;
+    background: rgba(20, 20, 20, 0.9);
+    color: white;
+    padding: 9px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
 }
+
+#ContextMenu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 42px;
+    min-width: 170px;
+    padding: 6px;
+    background: #171717;
+    border: 1px solid #444;
+    border-radius: 8px;
+}
+
 #ContextMenu a {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:250px;
-    height:48px;
-    margin:5px;
-    border:1px solid lightgrey;
-    border-radius:5px;
-    background:#444;
-    color:lightgrey;
-    text-decoration:none;
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
 }
+
 #ContextMenu a:hover {
-    background:#666;
-    color:white;
+    background: #333;
 }
+
+#statusDiv {
+    position: absolute;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    width: min(500px, 90%);
+    padding: 14px;
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid #444;
+    border-radius: 9px;
+    color: white;
+    z-index: 30;
+    font-size: 13px;
+}
+
+#statusDiv.hidden {
+    display: none;
+}
+
+#statusDiv.visible {
+    display: block;
+}
+
+#statusTextDiv {
+    max-height: 100px;
+    overflow-y: auto;
+    margin-bottom: 8px;
+}
+
+#statusProgress {
+    width: 100%;
+    height: 7px;
+    accent-color: #fff;
+}
+
+#inputDiv {
+    display: none;
+    position: absolute;
+    z-index: 40;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(400px, 90%);
+    padding: 18px;
+    background: #171717;
+    border: 1px solid #555;
+    border-radius: 9px;
+    color: white;
+}
+
+#inputDiv.visible {
+    display: block;
+}
+
+#inputDiv.hidden {
+    display: none;
+}
+
+#inputPrompt {
+    margin-bottom: 12px;
+}
+
+#inputText {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background: #080808;
+    color: white;
+    outline: none;
+}
+
+#inputForm button {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 5px;
+    background: #eee;
+    color: #111;
+    cursor: pointer;
+}
+
+#errorBox {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(550px, 90%);
+    padding: 20px;
+    background: #171717;
+    border: 1px solid #8b3333;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+}
+
+#errorBox h2 {
+    margin-top: 0;
+    color: #ff7777;
+}
+
+#errorMessage {
+    overflow-wrap: anywhere;
+    color: #ccc;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+#errorBox button {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
 </style>
 </head>
 
 <body>
 
-<canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+<div id="gameContainer">
 
-<img id="presplash"
-src="https://cdn.jsdelivr.net/gh/jc7041502-maker/C09@main/web-presplash.jpg">
+    <canvas id="canvas" tabindex="0"></canvas>
 
-<div id="ContextContainer">
-    <a id="ContextButton">≡</a><br>
-    <div id="ContextMenu" style="display:none">
-        <input id="ID_SavegamesImport" type="file" accept="application/zip"
-            onchange="onSavegamesImport(this)" style="display:none">
-        <a href="javascript:document.getElementById('ID_SavegamesImport').click()">Import Saves</a>
-        <a href="javascript:onSavegamesExport()">Export Saves</a>
-        <a href="javascript:FSDownload('/log.txt','text/plain')">Download Log</a>
-        <a href="https://www.renpy.org/" target="_blank">Powered by Ren'Py</a>
+    <div id="presplash"></div>
+
+    <!-- Required by renpy-pre.js -->
+    <div id="overlayDiv"></div>
+
+    <div id="ContextContainer">
+        <button id="ContextButton" type="button">Menu</button>
+
+        <div id="ContextMenu">
+            <a href="#" onclick="setFullscreen(true); return false;">Fullscreen</a>
+            <a href="#" onclick="setFullscreen(false); return false;">Exit fullscreen</a>
+            <a href="#" onclick="location.reload(); return false;">Restart game</a>
+        </div>
     </div>
-</div>
 
-<div id="statusDiv" class="hidden">
-    <div id="statusTextDiv"></div>
-    <progress id="statusProgress" max="100" value="0"></progress>
-</div>
+    <div id="statusDiv" class="visible">
+        <div id="statusTextDiv">Preparing game...</div>
+        <progress id="statusProgress" value="0" max="100"></progress>
+    </div>
 
-<div id="inputDiv" class="hidden">
-    <form id="inputForm">
-        <div id="inputPrompt"></div>
-        <input id="inputText" type="text">
-    </form>
+    <div id="inputDiv" class="hidden">
+        <form id="inputForm">
+            <div id="inputPrompt"></div>
+            <input id="inputText" type="text" autocomplete="off">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="errorBox">
+        <h2>Game couldn't load</h2>
+        <div id="errorMessage"></div>
+        <button onclick="location.reload()">Try again</button>
+    </div>
+
 </div>
 
 <script>
-(async function () {
+const RAW_BASE =
+    "https://raw.githubusercontent.com/jc7041502-maker/C09/main/";
 
-    const CDN = "https://cdn.jsdelivr.net/gh/jc7041502-maker/C09@main/";
+const CDN_BASE =
+    "https://cdn.jsdelivr.net/gh/jc7041502-maker/C09@main/";
 
-    const statusDiv = document.getElementById("statusDiv");
-    const statusText = document.getElementById("statusTextDiv");
+function showError(message) {
+    document.getElementById("errorBox").style.display = "block";
+    document.getElementById("errorMessage").textContent = message;
 
-    function showError(error) {
-        console.error(error);
-        statusDiv.className = "visible";
-        statusText.textContent = "Loading error: " + error.message;
-    }
+    document.getElementById("statusDiv").classList.add("hidden");
 
-    function loadScript(src) {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement("script");
-            script.src = src;
+    console.error(message);
+}
 
-            script.onload = resolve;
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
 
-            script.onerror = () => reject(
-                new Error("Could not load " + src)
-            );
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = () => reject(
+            new Error("Could not load script: " + url)
+        );
 
-            document.body.appendChild(script);
-        });
-    }
+        document.head.appendChild(script);
+    });
+}
 
+async function startGame() {
     try {
+        const partNames = [
+            "game.zip.part0",
+            "game.zip.part1"
+        ];
 
-        statusDiv.className = "visible";
-        statusText.textContent = "Downloading game files...";
+        const zipParts = [];
 
-        const parts = [];
+        for (let i = 0; i < partNames.length; i++) {
+            const filename = partNames[i];
 
-        for (const name of ["game.zip.part0", "game.zip.part1"]) {
+            document.getElementById("statusTextDiv").textContent =
+                "Downloading game files (" + (i + 1) + "/" + partNames.length + ")...";
 
-            const response = await fetch(CDN + name);
+            const response = await fetch(RAW_BASE + filename);
 
             if (!response.ok) {
-                throw new Error(name + " returned HTTP " + response.status);
+                throw new Error(
+                    "Couldn't download " + filename +
+                    ". Server returned " + response.status
+                );
             }
 
-            parts.push(await response.arrayBuffer());
+            zipParts.push(await response.arrayBuffer());
         }
 
-        const gameBlob = new Blob(parts, {
+        document.getElementById("statusTextDiv").textContent =
+            "Preparing game data...";
+
+        const gameBlob = new Blob(zipParts, {
             type: "application/zip"
         });
 
         window.gameZipURL = URL.createObjectURL(gameBlob);
 
+        // Configure Emscripten before loading Ren'Py.
         window.Module = {
-            locateFile: function (path) {
-                return CDN + path;
+            locateFile: function(path, prefix) {
+                const filename = path.split("/").pop();
+
+                if (
+                    filename === "renpy.wasm" ||
+                    filename === "renpy.data"
+                ) {
+                    return RAW_BASE + filename;
+                }
+
+                return prefix + path;
             }
         };
 
-        statusText.textContent = "Starting Ren'Py...";
+        document.getElementById("statusTextDiv").textContent =
+            "Starting Ren'Py engine...";
 
-        await loadScript(CDN + "renpy-pre.js");
-        await loadScript(CDN + "renpy.js");
+        await loadScript(CDN_BASE + "renpy-pre.js");
+        await loadScript(CDN_BASE + "renpy.js");
 
     } catch (error) {
-        showError(error);
+        showError(error.message || String(error));
     }
+}
 
-})();
+startGame();
 </script>
 
 </body>
