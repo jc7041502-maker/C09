@@ -6,7 +6,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Class of '09</title>
 <meta name="theme-color" content="#000">
-<link rel="icon" href="https://cdn.jsdelivr.net/gh/AlexBoops/C09@main/icons/icon-72x72.png">
+
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/jc7041502-maker/C09@main/icons/icon-72x72.png">
 
 <style>
 html,body {
@@ -122,8 +123,11 @@ html,body {
 </head>
 
 <body>
+
 <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
-<img id="presplash" src="https://cdn.jsdelivr.net/gh/AlexBoops/C09@main/web-presplash.jpg">
+
+<img id="presplash"
+src="https://cdn.jsdelivr.net/gh/jc7041502-maker/C09@main/web-presplash.jpg">
 
 <div id="ContextContainer">
     <a id="ContextButton">≡</a><br>
@@ -151,7 +155,8 @@ html,body {
 
 <script>
 (async function () {
-    const CDN = "https://cdn.jsdelivr.net/gh/AlexBoops/C09@main/";
+
+    const CDN = "https://cdn.jsdelivr.net/gh/jc7041502-maker/C09@main/";
 
     const statusDiv = document.getElementById("statusDiv");
     const statusText = document.getElementById("statusTextDiv");
@@ -166,22 +171,26 @@ html,body {
         return new Promise((resolve, reject) => {
             const script = document.createElement("script");
             script.src = src;
+
             script.onload = resolve;
+
             script.onerror = () => reject(
                 new Error("Could not load " + src)
             );
+
             document.body.appendChild(script);
         });
     }
 
     try {
+
         statusDiv.className = "visible";
         statusText.textContent = "Downloading game files...";
 
-        // Download both archive parts in order.
         const parts = [];
 
         for (const name of ["game.zip.part0", "game.zip.part1"]) {
+
             const response = await fetch(CDN + name);
 
             if (!response.ok) {
@@ -191,14 +200,12 @@ html,body {
             parts.push(await response.arrayBuffer());
         }
 
-        // Reassemble the ZIP.
         const gameBlob = new Blob(parts, {
             type: "application/zip"
         });
 
         window.gameZipURL = URL.createObjectURL(gameBlob);
 
-        // Route runtime data and WebAssembly requests to the repository.
         window.Module = {
             locateFile: function (path) {
                 return CDN + path;
@@ -207,13 +214,13 @@ html,body {
 
         statusText.textContent = "Starting Ren'Py...";
 
-        // Load the pre-loader before the main runtime.
         await loadScript(CDN + "renpy-pre.js");
         await loadScript(CDN + "renpy.js");
 
     } catch (error) {
         showError(error);
     }
+
 })();
 </script>
 
