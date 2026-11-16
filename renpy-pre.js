@@ -959,19 +959,19 @@ Module.preRun = Module.preRun || [ ];
      * Overlay div handling.
      **************************************************************************/
 
-    let overlayDiv = document.getElementById("overlayDiv");
+ let overlayDiv = document.getElementById("overlayDiv");
 
-    for (let eventName of ["mousedown", "mouseup", "mousemove" ]) {
+if (overlayDiv) {
+    for (let eventName of ["mousedown", "mouseup", "mousemove"]) {
         overlayDiv.addEventListener(eventName, function (e) {
             canvas.dispatchEvent(new MouseEvent(e.type, e));
 
-            if (e.type == "mouseup") {
+            if (e.type === "mouseup") {
                 overlayDiv.remove();
             }
-
         });
-
-    };
+    }
+}
 
 
 
